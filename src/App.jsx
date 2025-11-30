@@ -159,6 +159,13 @@ function App() {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  // Calculate burn percentage for joint animation
+  function getBurnPercentage() {
+    const totalSeconds = timerDuration * 60
+    const percentage = (timeRemaining / totalSeconds) * 100
+    return Math.max(0, Math.min(100, percentage))
+  }
+
   return (
     <div className={styles.container}>
       {/* Left Panel - Poker Timer */}
@@ -172,6 +179,29 @@ function App() {
           <section className={styles.timerSection}>
             <div className={styles.levelDisplay}>LEVEL {currentLevel}</div>
             <div className={styles.timerDisplay}>{formatTime(timeRemaining)}</div>
+
+            {/* Burning Joint Animation */}
+            <div className={styles.jointContainer}>
+              <div className={styles.joint}>
+                {/* Unburned portion */}
+                <div
+                  className={styles.jointUnburned}
+                  style={{ width: `${getBurnPercentage()}%` }}
+                />
+                {/* Burned portion (ash) */}
+                <div
+                  className={styles.jointBurned}
+                  style={{ width: `${100 - getBurnPercentage()}%` }}
+                />
+                {/* Ember at the burning point */}
+                {getBurnPercentage() > 0 && getBurnPercentage() < 100 && (
+                  <div
+                    className={styles.jointEmber}
+                    style={{ left: `${getBurnPercentage()}%` }}
+                  />
+                )}
+              </div>
+            </div>
 
             <div className={styles.controls}>
               <button onClick={handleStartPause} className={styles.btn}>
