@@ -113,6 +113,21 @@ function App() {
     }
   }
 
+  // Manual blind adjustment functions
+  function handleBlindsUp() {
+    setSmallBlind(prev => prev * 2)
+    setBigBlind(prev => prev * 2)
+    setCurrentLevel(prev => prev + 1)
+  }
+
+  function handleBlindsDown() {
+    if (currentLevel > 1) {
+      setSmallBlind(prev => prev / 2)
+      setBigBlind(prev => prev / 2)
+      setCurrentLevel(prev => prev - 1)
+    }
+  }
+
   // Calculate all possible single-chip-type payment options
   function calculateAllPaymentOptions(blindAmount) {
     const options = []
@@ -180,6 +195,24 @@ function App() {
 
       {/* Blinds Display Section */}
       <section className={styles.blindsSection}>
+        <div className={styles.blindControls}>
+          <button
+            onClick={handleBlindsUp}
+            className={styles.blindBtn}
+            title="Double blinds (level up)"
+          >
+            ▲ DOUBLE
+          </button>
+          <button
+            onClick={handleBlindsDown}
+            className={styles.blindBtn}
+            disabled={currentLevel <= 1}
+            title="Halve blinds (level down)"
+          >
+            ▼ HALVE
+          </button>
+        </div>
+
         <div className={styles.blindInfo}>
           <h2>SMALL BLIND: {smallBlind}</h2>
           <ChipBreakdownDisplay options={calculateAllPaymentOptions(smallBlind)} />
