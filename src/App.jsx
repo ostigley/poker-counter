@@ -223,28 +223,6 @@ function App() {
           <ChipBreakdownDisplay options={calculateAllPaymentOptions(bigBlind)} />
         </div>
       </section>
-
-      {/* Chip Legend Section */}
-      <section className={styles.legendSection}>
-        <h3>CHIP VALUES</h3>
-        <div className={styles.chipLegend}>
-          <ChipDisplay color="red" value={chipValues.red} />
-          <ChipDisplay color="green" value={chipValues.green} />
-          <ChipDisplay color="black" value={chipValues.black} />
-          <ChipDisplay color="blue" value={chipValues.blue} />
-          <ChipDisplay color="white" value={chipValues.white} />
-        </div>
-      </section>
-    </div>
-  )
-}
-
-// Helper component: Chip display in legend
-function ChipDisplay({ color, value }) {
-  return (
-    <div className={styles.chip}>
-      <div className={`${styles.chipCircle} ${styles[color]}`} />
-      <span>= {value}</span>
     </div>
   )
 }
