@@ -123,26 +123,28 @@ function App() {
     }
   }
 
-  // Chip breakdown calculator (greedy algorithm)
-  function calculateChipBreakdown(blindAmount) {
-    const chips = { white: 0, blue: 0, black: 0, green: 0, red: 0 }
-    let remaining = blindAmount
+  // Calculate all possible single-chip-type payment options
+  function calculateAllPaymentOptions(blindAmount) {
+    const options = []
 
-    // Use largest chips first
+    // For each chip color, calculate how many of that single type are needed
     const chipOrder = [
-      { color: 'white', value: chipValues.white },
-      { color: 'blue', value: chipValues.blue },
-      { color: 'black', value: chipValues.black },
+      { color: 'red', value: chipValues.red },
       { color: 'green', value: chipValues.green },
-      { color: 'red', value: chipValues.red }
+      { color: 'black', value: chipValues.black },
+      { color: 'blue', value: chipValues.blue },
+      { color: 'white', value: chipValues.white }
     ]
 
     for (const { color, value } of chipOrder) {
-      chips[color] = Math.floor(remaining / value)
-      remaining = remaining % value
+      // Only show this option if the blind amount is divisible by this chip value
+      if (blindAmount % value === 0) {
+        const count = blindAmount / value
+        options.push({ color, count })
+      }
     }
 
-    return chips
+    return options
   }
 
   // Time formatter
@@ -190,12 +192,12 @@ function App() {
       <section className={styles.blindsSection}>
         <div className={styles.blindInfo}>
           <h2>SMALL BLIND: {smallBlind}</h2>
-          <ChipBreakdownDisplay chips={calculateChipBreakdown(smallBlind)} />
+          <ChipBreakdownDisplay options={calculateAllPaymentOptions(smallBlind)} />
         </div>
 
         <div className={styles.blindInfo}>
           <h2>BIG BLIND: {bigBlind}</h2>
-          <ChipBreakdownDisplay chips={calculateChipBreakdown(bigBlind)} />
+          <ChipBreakdownDisplay options={calculateAllPaymentOptions(bigBlind)} />
         </div>
       </section>
 
@@ -224,22 +226,27 @@ function ChipDisplay({ color, value }) {
   )
 }
 
-// Helper component: Chip breakdown display
-function ChipBreakdownDisplay({ chips }) {
+// Helper component: Chip breakdown display with all payment options
+function ChipBreakdownDisplay({ options }) {
+  if (options.length === 0) {
+    return (
+      <div className={styles.breakdown}>
+        <span className={styles.noChips}>No chips needed</span>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.breakdown}>
-      {Object.entries(chips)
-        .filter(([_, count]) => count > 0)
-        .reverse() // Display from red to white (ascending value)
-        .map(([color, count]) => (
-          <div key={color} className={styles.chipCount}>
-            <div className={`${styles.chipCircle} ${styles[color]}`} />
-            <span>× {count}</span>
+      {options.map((option, index) => (
+        <div key={option.color} className={styles.paymentOption}>
+          {index > 0 && <div className={styles.orDivider}>OR</div>}
+          <div className={styles.chipCount}>
+            <div className={`${styles.chipCircle} ${styles[option.color]}`} />
+            <span>× {option.count}</span>
           </div>
-        ))}
-      {Object.values(chips).every(count => count === 0) && (
-        <span className={styles.noChips}>No chips needed</span>
-      )}
+        </div>
+      ))}
     </div>
   )
 }
