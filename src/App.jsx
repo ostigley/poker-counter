@@ -12,6 +12,9 @@ function App() {
   const [smallBlind, setSmallBlind] = useState(1) // 1 red chip
   const [bigBlind, setBigBlind] = useState(2) // 2 red chips
 
+  // Fullscreen state
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
   // Generate beep sound using Web Audio API
   function playBeep() {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)()
@@ -128,6 +131,63 @@ function App() {
     }
   }
 
+  // Fullscreen toggle function with browser compatibility
+  function toggleFullscreen() {
+    if (!document.fullscreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.mozFullScreenElement) {
+      // Enter fullscreen
+      const elem = document.documentElement
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen()
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen()
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen()
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen()
+      }
+      setIsFullscreen(true)
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen()
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen()
+      }
+      setIsFullscreen(false)
+    }
+  }
+
+  // Listen for fullscreen changes (user pressing ESC, etc.)
+  useEffect(() => {
+    function handleFullscreenChange() {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      )
+      setIsFullscreen(isCurrentlyFullscreen)
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
+    }
+  }, [])
+
   // Calculate all possible single-chip-type payment options
   function calculateAllPaymentOptions(blindAmount) {
     const options = []
@@ -173,6 +233,13 @@ function App() {
         <div className={styles.app}>
           <header className={styles.header}>
             <h1>♠ POKER BLIND TIMER ♣</h1>
+            <button
+              onClick={toggleFullscreen}
+              className={styles.fullscreenBtn}
+              title={isFullscreen ? 'Exit fullscreen (ESC)' : 'Enter fullscreen'}
+            >
+              {isFullscreen ? '⊗' : '⊡'}
+            </button>
           </header>
 
           {/* Timer Display Section */}

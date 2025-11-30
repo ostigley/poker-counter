@@ -52,12 +52,41 @@
   margin-bottom: 30px;
   box-shadow: 0 0 20px #00ff00;
   background: #0a0a0a;
+  position: relative;
 }
 
 .header h1 {
   font-size: 32px;
   letter-spacing: 3px;
   text-shadow: 0 0 10px #00ff00;
+}
+
+.fullscreenBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #00ff00;
+  color: #000;
+  border: 2px solid #00ff00;
+  padding: 8px 12px;
+  font-size: 24px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #006600;
+  transition: all 0.1s;
+  line-height: 1;
+}
+
+.fullscreenBtn:hover {
+  background: #00cc00;
+  box-shadow: 3px 3px 0 #005500;
+  transform: scale(1.05);
+}
+
+.fullscreenBtn:active {
+  transform: translate(2px, 2px) scale(1.05);
+  box-shadow: 1px 1px 0 #006600;
 }
 
 /* Timer Section */
