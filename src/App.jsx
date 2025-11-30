@@ -46,16 +46,21 @@ function App() {
 
     const interval = setInterval(() => {
       setTimeRemaining(prev => {
-        if (prev <= 1) {
-          handleTimerComplete()
-          return 0
+        if (prev === 1) {
+          // Timer completed - execute completion logic directly here
+          playBeep()
+          setSmallBlind(prevBlind => prevBlind * 2)
+          setBigBlind(prevBlind => prevBlind * 2)
+          setCurrentLevel(prevLevel => prevLevel + 1)
+          setIsRunning(false)
+          return timerDuration * 60
         }
-        return prev - 1
+        return prev > 0 ? prev - 1 : 0
       })
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isRunning])
+  }, [isRunning, timerDuration])
 
   // localStorage persistence effect
   useEffect(() => {
@@ -85,21 +90,6 @@ function App() {
       }
     }
   }, [])
-
-  // Timer completion handler
-  function handleTimerComplete() {
-    // Play audio alert
-    playBeep()
-
-    // Double blinds
-    setSmallBlind(prev => prev * 2)
-    setBigBlind(prev => prev * 2)
-    setCurrentLevel(prev => prev + 1)
-
-    // Reset timer but don't auto-start
-    setTimeRemaining(timerDuration * 60)
-    setIsRunning(false)
-  }
 
   // Control functions
   function handleStartPause() {
