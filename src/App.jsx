@@ -160,69 +160,90 @@ function App() {
   }
 
   return (
-    <div className={styles.app}>
-      <header className={styles.header}>
-        <h1>♠ POKER BLIND TIMER ♣</h1>
-      </header>
+    <div className={styles.container}>
+      {/* Left Panel - Poker Timer */}
+      <div className={styles.leftPanel}>
+        <div className={styles.app}>
+          <header className={styles.header}>
+            <h1>♠ POKER BLIND TIMER ♣</h1>
+          </header>
 
-      {/* Timer Display Section */}
-      <section className={styles.timerSection}>
-        <div className={styles.levelDisplay}>LEVEL {currentLevel}</div>
-        <div className={styles.timerDisplay}>{formatTime(timeRemaining)}</div>
+          {/* Timer Display Section */}
+          <section className={styles.timerSection}>
+            <div className={styles.levelDisplay}>LEVEL {currentLevel}</div>
+            <div className={styles.timerDisplay}>{formatTime(timeRemaining)}</div>
 
-        <div className={styles.controls}>
-          <button onClick={handleStartPause} className={styles.btn}>
-            {isRunning ? 'PAUSE' : 'START'}
-          </button>
-          <button onClick={handleReset} className={styles.btn}>
-            RESET
-          </button>
+            <div className={styles.controls}>
+              <button onClick={handleStartPause} className={styles.btn}>
+                {isRunning ? 'PAUSE' : 'START'}
+              </button>
+              <button onClick={handleReset} className={styles.btn}>
+                RESET
+              </button>
+            </div>
+
+            <div className={styles.durationConfig}>
+              <label>Timer Duration (minutes):</label>
+              <input
+                type="number"
+                value={timerDuration}
+                onChange={(e) => handleDurationChange(Number(e.target.value))}
+                min="1"
+                max="120"
+                disabled={isRunning}
+                className={styles.input}
+              />
+            </div>
+          </section>
+
+          {/* Blinds Display Section */}
+          <section className={styles.blindsSection}>
+            <div className={styles.blindControls}>
+              <button
+                onClick={handleBlindsUp}
+                className={styles.blindBtn}
+                title="Double blinds (level up)"
+              >
+                ▲ DOUBLE
+              </button>
+              <button
+                onClick={handleBlindsDown}
+                className={styles.blindBtn}
+                disabled={currentLevel <= 1}
+                title="Halve blinds (level down)"
+              >
+                ▼ HALVE
+              </button>
+            </div>
+
+            <div className={styles.blindInfo}>
+              <h2>SMALL BLIND: {smallBlind}</h2>
+              <ChipBreakdownDisplay options={calculateAllPaymentOptions(smallBlind)} />
+            </div>
+
+            <div className={styles.blindInfo}>
+              <h2>BIG BLIND: {bigBlind}</h2>
+              <ChipBreakdownDisplay options={calculateAllPaymentOptions(bigBlind)} />
+            </div>
+          </section>
         </div>
+      </div>
 
-        <div className={styles.durationConfig}>
-          <label>Timer Duration (minutes):</label>
-          <input
-            type="number"
-            value={timerDuration}
-            onChange={(e) => handleDurationChange(Number(e.target.value))}
-            min="1"
-            max="120"
-            disabled={isRunning}
-            className={styles.input}
+      {/* Right Panel - Spotify */}
+      <div className={styles.rightPanel}>
+        <div className={styles.spotifyContainer}>
+          <iframe
+            src="https://open.spotify.com/embed/playlist/2GfUZqd0vjXI06vYsWLRXe?utm_source=generator&theme=0"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            allowFullScreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Spotify Playlist"
           />
         </div>
-      </section>
-
-      {/* Blinds Display Section */}
-      <section className={styles.blindsSection}>
-        <div className={styles.blindControls}>
-          <button
-            onClick={handleBlindsUp}
-            className={styles.blindBtn}
-            title="Double blinds (level up)"
-          >
-            ▲ DOUBLE
-          </button>
-          <button
-            onClick={handleBlindsDown}
-            className={styles.blindBtn}
-            disabled={currentLevel <= 1}
-            title="Halve blinds (level down)"
-          >
-            ▼ HALVE
-          </button>
-        </div>
-
-        <div className={styles.blindInfo}>
-          <h2>SMALL BLIND: {smallBlind}</h2>
-          <ChipBreakdownDisplay options={calculateAllPaymentOptions(smallBlind)} />
-        </div>
-
-        <div className={styles.blindInfo}>
-          <h2>BIG BLIND: {bigBlind}</h2>
-          <ChipBreakdownDisplay options={calculateAllPaymentOptions(bigBlind)} />
-        </div>
-      </section>
+      </div>
     </div>
   )
 }
