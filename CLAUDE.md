@@ -106,13 +106,16 @@ Automatically restores on page load. RESET button clears localStorage.
 
 ```
 poker-counter/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml       # GitHub Actions deployment workflow
 ├── src/
 │   ├── App.jsx              # Main component (~250 lines, all logic here)
 │   ├── App.module.css       # Retro terminal styling
 │   ├── main.jsx             # React entry (NO StrictMode wrapper)
 │   └── index.css            # Global resets only
 ├── index.html               # Entry point
-├── vite.config.js           # Vite configuration
+├── vite.config.js           # Vite configuration (includes GitHub Pages base path)
 ├── package.json             # Dependencies
 ├── IMPLEMENTATION_PLAN.md   # Development progress tracker
 ├── TESTING_CHECKLIST.md     # Manual testing guide
@@ -141,6 +144,29 @@ Manual testing only. Follow `TESTING_CHECKLIST.md` for comprehensive scenarios.
 - Audio alert on timer completion (may not work until user interaction due to browser policies)
 - Manual blind adjustment controls
 - Payment option calculations at various blind levels
+
+### Deployment
+
+**Live URL:** https://ostigley.github.io/poker-counter/
+
+**Automatic Deployment:**
+GitHub Actions automatically builds and deploys to GitHub Pages on every push to `main` branch. The workflow:
+1. Checks out code
+2. Installs dependencies with `npm ci`
+3. Builds production bundle with `npm run build`
+4. Deploys to GitHub Pages
+
+**Manual Deployment:**
+```bash
+npm run deploy
+```
+
+This builds the app and pushes to the `gh-pages` branch.
+
+**Configuration:**
+- `vite.config.js`: Sets `base: '/poker-counter/'` for correct asset paths
+- `.github/workflows/deploy.yml`: GitHub Actions workflow
+- GitHub repository settings: Pages must be enabled, source set to GitHub Actions
 
 ### Git Workflow
 
